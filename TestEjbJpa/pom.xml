@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.example.jpa</groupId>
+		<artifactId>TestJpa</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<artifactId>TestEjbJpa</artifactId>
+	<name>TestEjbJpa</name>
+	<url>http://maven.apache.org</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.example.jpa</groupId>
+			<artifactId>TestPojo</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		
+	</dependencies>
+
+	<build>
+		<finalName>TestEjb</finalName>
+		<plugins>
+			<!-- Maven Ejb Plugin(Used to add configuration of ejbVersion to 3.2 which 
+				defaults to 2.1) -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ejb-plugin</artifactId>
+				<version>${maven.ejb.plugin.verion}</version>
+				<configuration>
+					<!-- defaults to 2.1 -->
+					<ejbVersion>${ejb.verion}</ejbVersion>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
