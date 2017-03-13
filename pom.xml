@@ -92,5 +92,6 @@
 		<module>TestJpaWeb</module>
 		<module>TestJpaEar</module>
 		<module>TestPojo</module>
+<module>CommonResources</module>
 	</modules>
 </project>

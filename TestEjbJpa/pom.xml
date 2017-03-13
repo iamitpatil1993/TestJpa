@@ -38,6 +38,14 @@
 			<scope>compile</scope>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.example.jpa</groupId>
+			<artifactId>CommonResources</artifactId>
+			<version>1.0</version>
+			<type>zip</type>
+			<classifier>resources</classifier>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -58,6 +66,28 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack-shared-resources</id>
+						<goals>
+							<goal>unpack-dependencies</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+							<includeArtifacIds>CommonResources</includeArtifacIds>
+							<includeGroupIds>com.example.ejb</includeGroupIds>
+							<excludeTransitive>true</excludeTransitive>
+							<!--use as much as needed to be specific...also scope,type,classifier 
+								etc -->
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
