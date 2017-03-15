@@ -5,15 +5,17 @@
 	version="2.5">
 
 
-  <display-name>Archetype Created Web Application</display-name>
-  
-  <servlet>
-  	<servlet-name>TestWeb</servlet-name>
-  	<servlet-class>com.example.jpa.web.TestWeb</servlet-class>
-  </servlet>
-  
-  <servlet-mapping>
-  	<servlet-name>TestWeb</servlet-name>
-  	<url-pattern>/tetWeb</url-pattern>
-  </servlet-mapping>
+	<display-name>Archetype Created Web Application</display-name>
+	<servlet>
+		<description>
+		</description>
+		<display-name>HelloWorldServlet</display-name>
+		<servlet-name>HelloWorldServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.HelloWorldServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>HelloWorldServlet</servlet-name>
+		<url-pattern>/HelloWorldServlet</url-pattern>
+	</servlet-mapping>
+
 </web-app>
