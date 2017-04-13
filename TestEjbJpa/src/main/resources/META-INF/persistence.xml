@@ -8,8 +8,26 @@
 	<persistence-unit name="JPADB" transaction-type="JTA">
 		<jta-data-source>java:jboss/datasources/MySqlDS</jta-data-source>
 		<properties>
+			
+			<!-- Select Dialect to be used -->
 			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			
+			<!-- Enable the logging of all the generated SQL statements to the console -->
 			<property name="hibernate.show_sql" value="true" />
+			
+			<!-- Format the generated SQL statement to make it more readable, but takes up more screen space. -->
+			<property name="format_sql" value="true"/>
+			
+			<!-- Hibernate will put comments inside all generated SQL statements to hint what’s the generated SQL trying to do -->
+			<property name="use_sql_comments" value="true"/>
+			
+			 <!-- property is used to specify the action taken by the persistence provider when an application is deployed. If the property is not set, the persistence provider will not create or drop any database artifacts. -->
+			 <!-- THIS IS JPA Specific Property hibernate specific is <property name="hibernate.hbm2ddl.auto" value="update" /> -->
+			 <!-- Possible Values : CREATE, DROP, DROP-AND-CREATE, NONE -->
+			<!-- <property name="javax.persistence.schema-generation.database.action" value="drop"/> -->
+			
+			<property name="hibernate.hbm2ddl.auto" value="update"/>
+			
 		</properties>
 	</persistence-unit>
 
