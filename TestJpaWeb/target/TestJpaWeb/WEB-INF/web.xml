@@ -20,6 +20,13 @@
 		<servlet-name>AccessTypeServlet</servlet-name>
 		<servlet-class>com.example.jpa.web.accesstype.AccessTypeServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>MappingTypesServlet</display-name>
+		<servlet-name>MappingTypesServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.mappingtypes.MappingTypesServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>HelloWorldServlet</servlet-name>
 		<url-pattern>/HelloWorldServlet</url-pattern>
@@ -27,6 +34,10 @@
 	<servlet-mapping>
 		<servlet-name>AccessTypeServlet</servlet-name>
 		<url-pattern>/AccessTypeServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>MappingTypesServlet</servlet-name>
+		<url-pattern>/MappingTypesServlet</url-pattern>
 	</servlet-mapping>
 
 </web-app>
