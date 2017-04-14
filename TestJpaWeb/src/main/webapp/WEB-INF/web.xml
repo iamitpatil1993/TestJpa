@@ -28,5 +28,26 @@
 		<servlet-name>AccessTypeServlet</servlet-name>
 		<url-pattern>/AccessTypeServlet</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>UserRegistrationServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.apachecommons.UserRegistrationServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 
+	<servlet-mapping>
+		<servlet-name>UserRegistrationServlet</servlet-name>
+		<url-pattern>/userRegister</url-pattern>
+	</servlet-mapping>
+	
+	<context-param>
+		<description>File upload default directory</description>
+		<param-name>tempUpload.directory</param-name>
+		<param-value>userfiles</param-value>
+	</context-param>
+	
+	<listener>
+		<description>Listener to create initial context and directories</description>
+		<listener-class>com.example.jpa.web.utils.ServletContextInitilizer</listener-class>
+	</listener>
 </web-app>

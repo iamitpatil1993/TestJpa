@@ -35,6 +35,9 @@
 		<project.groupId>com.example.jpa</project.groupId>
 		<project.version>1.0</project.version>
 
+		<!-- Maven Dependency version -->
+		<apache.commons.file-upload.version>1.3.2</apache.commons.file-upload.version>
+		
 		<!-- application.xml version -->
 		<application.xml.version>6</application.xml.version>
 	</properties>

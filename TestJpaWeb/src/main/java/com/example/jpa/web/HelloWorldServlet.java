@@ -143,7 +143,6 @@ public class HelloWorldServlet extends HttpServlet {
 		catch (InvalidDataException e) {
 			e.printStackTrace();
 			printWriter.println("Invalid Employee Id, can't find employee with gien employeeId : " + request.getParameter("employeeId"));
-
 		}
 	}
 }
