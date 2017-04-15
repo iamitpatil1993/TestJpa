@@ -2,6 +2,7 @@ package com.example.jpa.web.apachecommons;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.example.ejb.jpa.beans.lobs.LargeObjectTestBean;
  *Mostly used to demostrate the file upolad using apache commons fileUpload librarey
  * 
  */
+import com.example.pojo.Document;
 
 public class UserRegistrationServlet extends HttpServlet{
 
@@ -39,7 +41,7 @@ public class UserRegistrationServlet extends HttpServlet{
 	static {
 		LOGGER = Logger.getLogger(UserRegistrationServlet.class);
 	}
-	
+
 	@EJB
 	private LargeObjectTestBean largeObjectTestBean;
 
@@ -65,11 +67,12 @@ public class UserRegistrationServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter printWriter = response.getWriter();
-		
+
 		//Check request is multi-part 	
 		// Check that we have a file upload request
 		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-
+		response.setContentType("text/html");
+		
 		//If Multipast proceed with file upload 
 		if(isMultipart) {
 
@@ -91,17 +94,27 @@ public class UserRegistrationServlet extends HttpServlet{
 							LOGGER.info("File Size : " + fileItem.getSize());
 							LOGGER.info("File Size : " + fileItem.getSize() + " bytes");
 							LOGGER.info("File extension : " + FilenameUtils.getExtension(fileItem.getName()));
-							
-							
-							Integer docId = largeObjectTestBean.uploadDocument(fileItem.get());
-							
-							LOGGER.info("File uploaded successfully with document id : " + docId);
+							LOGGER.info("File content Type : " + fileItem.getContentType());
+
+							String filePath = (String)getServletContext().getAttribute("USER_DIR_PATH") + File.separator + System.currentTimeMillis() + fileItem.getName();
+
+							//Write file to Database 
+							Document document = new Document(fileItem.getName(), filePath, FilenameUtils.getExtension(fileItem.getName()), fileItem.get(), fileItem.getSize(), fileItem.getContentType());
+							Integer docId = largeObjectTestBean.uploadDocument(document);
+
+							//Write file to path stored in context
+							File file = new File(filePath);		
+							fileItem.write(file);
+
+							printWriter.print("File uploaded successfully with document id : " + docId);
+							printWriter.print("</br>");
+							printWriter.println("<a href=\"userRegister?id=" + docId + "\">Click here do download image</a>");
 						}
 					}
 				} else {
 					printWriter.println("File not attached ... Please select file and then try again to upload");
 				}
-				
+
 			} catch (FileUploadException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -113,6 +126,42 @@ public class UserRegistrationServlet extends HttpServlet{
 		}
 	}
 
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		LOGGER.info("Inside doGet ...");
+		if(null != request.getParameter("id")) {
+			
+			Integer docId = Integer.valueOf(request.getParameter("id"));
+			Document document = largeObjectTestBean.getDocument(docId);
+			
+			if(null != document) {
+				
+				LOGGER.info("Inside null != document ");
+				//1.Set content type of binary data that we will put in response
+				response.setContentType(document.getContentType() != null ? document.getContentType() : "application/octet-stream");
+				response.setContentLength((document.getFileSize().intValue()));
+				
+				//2.Write file data to stram
+				OutputStream outputStream = response.getOutputStream();
+				outputStream.write(document.getBytes());
+				
+				//3.Close
+				outputStream.flush();
+				outputStream.close();
+				response.flushBuffer();
+			}
+			else {
+				response.setStatus(404);
+			}
+		}
+		else {
+			response.setStatus(404);
+		}
+		
+	}
+	
+	
+
 
 }
- 

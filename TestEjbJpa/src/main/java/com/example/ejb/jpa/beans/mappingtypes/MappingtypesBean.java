@@ -36,16 +36,8 @@ private final static Logger LOGGER;
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void create() throws IOException {
-		/*
-		Primitive Java types: byte, int, short, long, boolean, char, float, double
-		• Wrapper classes of primitive Java types: Byte, Integer, Short, Long, Boolean,
-		Character, Float, Double
-		• Byte and character array types: byte[], Byte[], char[], Character[]
-		• Large numeric types: java.math.BigInteger, java.math.BigDecimal
-		• Strings: java.lang.String
-		• Java temporal types: java.util.Date, java.util.Calendar
-		• JDBC temporal types: java.sql.Date, java.sql.Time, java.sql.TimestampCHAPTER 4 ■ OBJECT-RELATIONAL MAPPING
-		• Enumerated type*/
+		
+		
 		MappingTypes mappingTypes = new MappingTypes();
 		
 		mappingTypes.setBuildBoolean(true);
