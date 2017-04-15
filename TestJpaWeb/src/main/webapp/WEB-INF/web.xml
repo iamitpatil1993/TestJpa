@@ -41,6 +41,13 @@
 		<servlet-name>EnumMappingTestServlet</servlet-name>
 		<servlet-class>com.example.jpa.web.enums.EnumMappingTestServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>TemporalMappingTestServlet</display-name>
+		<servlet-name>TemporalMappingTestServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.TemporalMappingTestServlet</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -49,6 +56,10 @@
 	<servlet-mapping>
 		<servlet-name>EnumMappingTestServlet</servlet-name>
 		<url-pattern>/EnumMappingTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TemporalMappingTestServlet</servlet-name>
+		<url-pattern>/TemporalMappingTestServlet</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>
