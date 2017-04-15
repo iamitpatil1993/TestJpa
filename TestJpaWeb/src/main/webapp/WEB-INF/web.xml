@@ -34,10 +34,21 @@
 		<servlet-class>com.example.jpa.web.apachecommons.UserRegistrationServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>EnumMappingTestServlet</display-name>
+		<servlet-name>EnumMappingTestServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.enums.EnumMappingTestServlet</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
 		<url-pattern>/userRegister</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>EnumMappingTestServlet</servlet-name>
+		<url-pattern>/EnumMappingTestServlet</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>
