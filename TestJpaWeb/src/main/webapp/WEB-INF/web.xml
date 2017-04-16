@@ -46,7 +46,21 @@
 		</description>
 		<display-name>TemporalMappingTestServlet</display-name>
 		<servlet-name>TemporalMappingTestServlet</servlet-name>
-		<servlet-class>com.example.jpa.web.TemporalMappingTestServlet</servlet-class>
+		<servlet-class>com.example.jpa.web.temporal.TemporalMappingTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>TableIdentityGeneratorTestServlet</display-name>
+		<servlet-name>TableIdentityGeneratorTestServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.identitygenerators.TableIdentityGeneratorTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>IdentityGeneratorTestServlet</display-name>
+		<servlet-name>IdentityGeneratorTestServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.identitygenerators.IdentityGeneratorTestServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -60,6 +74,14 @@
 	<servlet-mapping>
 		<servlet-name>TemporalMappingTestServlet</servlet-name>
 		<url-pattern>/TemporalMappingTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TableIdentityGeneratorTestServlet</servlet-name>
+		<url-pattern>/TableIdentityGeneratorTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>IdentityGeneratorTestServlet</servlet-name>
+		<url-pattern>/IdentityGeneratorTestServlet</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>

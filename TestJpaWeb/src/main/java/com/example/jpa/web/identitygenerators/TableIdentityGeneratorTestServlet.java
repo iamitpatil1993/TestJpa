@@ -1,4 +1,4 @@
-package com.example.jpa.web.temporal;
+package com.example.jpa.web.identitygenerators;
 
 import java.io.IOException;
 
@@ -10,36 +10,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.example.ejb.jpa.beans.temporal.TemporalMappingTestBean;
+import com.example.ejb.jpa.beans.identitygenerators.TableIdentityGeneratorTestBean;
 
 /**
- * Servlet implementation class TemporalMappingTestServlet
+ * Servlet implementation class TableIdentityGeneratorTestServlet
  */
-public class TemporalMappingTestServlet extends HttpServlet {
+public class TableIdentityGeneratorTestServlet extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
-       
 	private static final Logger LOGGER;
-
+	
 	static {
-		LOGGER = Logger.getLogger(TemporalMappingTestServlet.class);
+		LOGGER = Logger.getLogger(TableIdentityGeneratorTestServlet.class);
 	}
 
 	@EJB
-	TemporalMappingTestBean temporalMappingTestBean;
+	private TableIdentityGeneratorTestBean tableIdentityGeneratorTestBean;
 	
 	
-    public TemporalMappingTestServlet() {
-        super();
-    }
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-		temporalMappingTestBean.display(Integer.parseInt(request.getParameter("id")));
 		
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		temporalMappingTestBean.create();
+		tableIdentityGeneratorTestBean.create();
 	}
 
 }
