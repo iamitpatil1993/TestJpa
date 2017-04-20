@@ -7,6 +7,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.example.ejb.jpa.entities.embedded.AuditLogging;
 import com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User;
 
 @Entity
@@ -39,6 +41,10 @@ public class Project implements Serializable{
 	//We can choose any of the entity as owner no matter
 	@ManyToMany(fetch=FetchType.LAZY, mappedBy="projects")
 	private List<User> users;
+	
+	//Actually this embedded annotation is completely optional, we can sepcify this only when we want to override the attributes in embedded objects.
+	@Embedded
+	private AuditLogging auditLogging;
 
 	public List<User> getUsers() {
 		return users;
@@ -62,5 +68,13 @@ public class Project implements Serializable{
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public AuditLogging getAuditLogging() {
+		return auditLogging;
+	}
+
+	public void setAuditLogging(AuditLogging auditLogging) {
+		this.auditLogging = auditLogging;
 	}
 }
