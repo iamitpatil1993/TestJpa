@@ -1,11 +1,14 @@
 package com.example.ejb.jpa.entities.relationships.onetooneunidirectional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.relation.Relation;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,9 +18,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
+import com.example.ejb.jpa.entities.collectionsorting.nonindexedlist.Relative;
 import com.example.ejb.jpa.entities.relationships.manytomany.Project;
 import com.example.ejb.jpa.entities.relationships.onetoonebidirectional.ParkingLot;
 
@@ -65,6 +71,15 @@ public class User implements Serializable {
 			)
 	private List<Project> projects;
 	
+	//1.Rule one must use collection interfaces opposed to concrete implementation classes as collection attributes.
+	//2.Instantiate collection attribute in entity loading, initialization or construction time.
+	//3.Set orderBy clause which will be used while loading this list first time into persistence context. This ordering takes place at database level
+	//i.e it will add "order by firstName ASC, lastName ASC" clause in select query. So very much efficient for large data as well
+	//Default ordering will be by primary key of association in ascending order
+	@OneToMany(mappedBy="user")
+	@OrderBy("firstName ASC, lastName ASC")
+	private List<Relative> relatives = new ArrayList<Relative>();
+	
 	public List<Project> getProjects() {
 		return projects;
 	}
@@ -104,6 +119,20 @@ public class User implements Serializable {
 	public void setDesk(Desk desk) {
 		this.desk = desk;
 	}
+	
 
+	public List<Relative> getRelatives() {
+		return relatives;
+	}
+
+	public void setRelatives(List<Relative> relatives) {
+		this.relatives = relatives;
+	}
+
+	//method to add relative to user's relative list 
+	public void addRelative(Relative relative) {
+		this.relatives.add(relative);
+		relative.setUser(this);
+	}
 	
 }

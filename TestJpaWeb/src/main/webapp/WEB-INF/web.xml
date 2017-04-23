@@ -69,6 +69,27 @@
 		<servlet-name>AutoIdentityGeneratorTestServlet</servlet-name>
 		<servlet-class>com.example.jpa.web.identitygenerators.AutoIdentityGeneratorTestServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>OrderedListTestServlet</display-name>
+		<servlet-name>OrderedListTestServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.collectionsorting.OrderedListTestServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>UserRestHandler</display-name>
+		<servlet-name>UserRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.collectionsorting.UserRestHandler</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>RelativeRestHandler</display-name>
+		<servlet-name>RelativeRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.collectionsorting.RelativeRestHandler</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -93,6 +114,18 @@
 	<servlet-mapping>
 		<servlet-name>AutoIdentityGeneratorTestServlet</servlet-name>
 		<url-pattern>/AutoIdentityGeneratorTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>OrderedListTestServlet</servlet-name>
+		<url-pattern>/OrderedListTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UserRestHandler</servlet-name>
+		<url-pattern>/UserRestHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>RelativeRestHandler</servlet-name>
+		<url-pattern>/RelativeRestHandler</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>
