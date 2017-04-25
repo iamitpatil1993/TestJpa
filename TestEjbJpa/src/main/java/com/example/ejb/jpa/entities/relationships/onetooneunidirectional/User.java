@@ -21,8 +21,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
+import com.example.ejb.jpa.entities.collectionsorting.indexedlist.Phone;
 import com.example.ejb.jpa.entities.collectionsorting.nonindexedlist.Relative;
 import com.example.ejb.jpa.entities.relationships.manytomany.Project;
 import com.example.ejb.jpa.entities.relationships.onetoonebidirectional.ParkingLot;
@@ -36,7 +38,7 @@ public class User implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	//Integer is best data type to be used as primary key column in entity. Don't use long. Range of Int is quite large so no need of large.
 	//Using large as primary key will un-necessarily increase memory usage.
 	@Id
@@ -44,7 +46,7 @@ public class User implements Serializable {
 	@Column(name="user_id")
 	@Basic
 	private Integer userId;
-	
+
 	@Column(name="name")
 	private String name;
 
@@ -53,16 +55,16 @@ public class User implements Serializable {
 	//Since it is one directional relationshipe, and desk entity won't be having reference back to this entity. We will choose to keep foreign key (JoinColumn)
 	//in this entity only.
 	//User - Owning Entity, Desk- Non-owning entity or inverse entity
-	
-	
+
+
 	//Check what is difference between CascadeType.REMOVE and orphalRemove
 	@OneToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="desk_id")
 	private Desk desk;
-	
+
 	@OneToOne(mappedBy="parkingLotUser", fetch=FetchType.LAZY)
 	private ParkingLot parkingLot;
-	
+
 	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
 			name="user_project",
@@ -70,7 +72,7 @@ public class User implements Serializable {
 			inverseJoinColumns=@JoinColumn(name="project_id")
 			)
 	private List<Project> projects;
-	
+
 	//1.Rule one must use collection interfaces opposed to concrete implementation classes as collection attributes.
 	//2.Instantiate collection attribute in entity loading, initialization or construction time.
 	//3.Set orderBy clause which will be used while loading this list first time into persistence context. This ordering takes place at database level
@@ -79,7 +81,12 @@ public class User implements Serializable {
 	@OneToMany(mappedBy="user")
 	@OrderBy("firstName ASC, lastName ASC")
 	private List<Relative> relatives = new ArrayList<Relative>();
-	
+
+
+	//Define order column to persist order in database, this column will be used internally by provider
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="user", cascade=CascadeType.ALL)
+	private List<Phone> phones = new ArrayList<Phone>();
+
 	public List<Project> getProjects() {
 		return projects;
 	}
@@ -119,7 +126,7 @@ public class User implements Serializable {
 	public void setDesk(Desk desk) {
 		this.desk = desk;
 	}
-	
+
 
 	public List<Relative> getRelatives() {
 		return relatives;
@@ -129,10 +136,23 @@ public class User implements Serializable {
 		this.relatives = relatives;
 	}
 
+	public List<Phone> getPhones() {
+		return phones;
+	}
+
+	public void setPhones(List<Phone> phones) {
+		this.phones = phones;
+	}
+
 	//method to add relative to user's relative list 
 	public void addRelative(Relative relative) {
 		this.relatives.add(relative);
 		relative.setUser(this);
 	}
-	
+
+	//method to add phone to user's phone list
+	public void addPhone(Phone phone) {
+		this.phones.add(phone);
+		phone.setUser(this);
+	}
 }

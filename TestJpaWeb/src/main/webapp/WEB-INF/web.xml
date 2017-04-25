@@ -90,6 +90,13 @@
 		<servlet-name>RelativeRestHandler</servlet-name>
 		<servlet-class>com.example.jpa.web.collectionsorting.RelativeRestHandler</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>UserPhoneRestHandler</display-name>
+		<servlet-name>UserPhoneRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.collectionsorting.UserPhoneRestHandler</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -126,6 +133,10 @@
 	<servlet-mapping>
 		<servlet-name>RelativeRestHandler</servlet-name>
 		<url-pattern>/RelativeRestHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>UserPhoneRestHandler</servlet-name>
+		<url-pattern>/UserPhoneRestHandler</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>

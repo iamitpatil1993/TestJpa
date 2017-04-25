@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 public class User {
 
 	
 	private Integer userId;
 	private String name;
 	private List<Relative> relatives = new ArrayList<Relative>();
+	private List<Phone> phones = new ArrayList<Phone>();
+
 	
 	public User() {
 		
@@ -42,6 +45,14 @@ public class User {
 	public String toString() {
 		return "User [userId=" + userId + ", name=" + name + ", relatives="
 				+ relatives + "]";
+	}
+
+	public List<Phone> getPhones() {
+		return phones;
+	}
+
+	public void setPhones(List<Phone> phones) {
+		this.phones = phones;
 	}
 	
 		

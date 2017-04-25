@@ -2,8 +2,6 @@ package com.example.jpa.web.collectionsorting;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -14,52 +12,56 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.example.ejb.jpa.beans.collectionsorting.ListSortingTestBean;
-import com.example.ejb.jpa.exceptions.InsufficientDataException;
+import com.example.ejb.jpa.exceptions.InvalidDataException;
 import com.example.pojo.Phone;
+import com.example.pojo.Relative;
 import com.example.pojo.User;
 
 /**
- * Servlet implementation class UserRestHandler
+ * Servlet implementation class UserPhoneRestHandler
  */
-public class UserRestHandler extends HttpServlet {
+public class UserPhoneRestHandler extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER;
-	
+
 	@EJB
 	private ListSortingTestBean listSortingTestBean;
-	
+
 	static {
-		LOGGER = Logger.getLogger(UserRestHandler.class);
+		LOGGER = Logger.getLogger(UserPhoneRestHandler.class);
 	}
-	
-	
-	public UserRestHandler() {
+
+
+	public UserPhoneRestHandler() {
 		super();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		PrintWriter writer = response.getWriter();
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 		try {
-			
-			List<Phone> phones = new ArrayList<Phone>();
-			String[] phnes = request.getParameterValues("phoneNumber");
-			for(String phone : phnes) {
-				phones.add(new Phone(null, phone, null));
-			}
-			
-			User user = new User();
-			user.setName(request.getParameter("name"));
-			user.setPhones(phones);
-			user = listSortingTestBean.createUser(user);
-			writer.println("User created successfully : " + user);
-			
-		} catch (InsufficientDataException e) {
-			writer.println("Error while creating User : " + e.getMessage());
-			e.printStackTrace();
+
+			Phone phone = new Phone(null,
+					request.getParameter("phoneNumber"),
+					new User(Integer.parseInt(request.getParameter("userId"))));
+
+			phone = listSortingTestBean.addPhone(phone);
+			writer.println("phone added successfully : " + phone);
+
+		} catch(InvalidDataException dataException) {
+			writer.println("Error while adding phone : " + dataException.getMessage());
+			dataException.printStackTrace();
 		}
 	}
+
 }

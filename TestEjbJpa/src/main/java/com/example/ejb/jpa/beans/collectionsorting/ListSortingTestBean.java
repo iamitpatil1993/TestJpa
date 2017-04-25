@@ -1,5 +1,8 @@
 package com.example.ejb.jpa.beans.collectionsorting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -10,6 +13,7 @@ import javax.persistence.PersistenceContext;
 
 import org.apache.log4j.Logger;
 
+import com.example.ejb.jpa.entities.collectionsorting.indexedlist.Phone;
 import com.example.ejb.jpa.exceptions.InsufficientDataException;
 import com.example.ejb.jpa.exceptions.InvalidDataException;
 import com.example.pojo.Relative;
@@ -32,9 +36,15 @@ public class ListSortingTestBean {
 	public User createUser(User user) throws InsufficientDataException {
 
 		if(null != user) {
-
+			List<Phone> userPhones = new ArrayList<Phone>();
 			com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User userEntity = new com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User();
 			userEntity.setName(user.getName());
+			
+			for(com.example.pojo.Phone phone : user.getPhones()) {
+				userPhones.add(new Phone(null, phone.getPhoneNumber(), userEntity));
+			}
+			
+			userEntity.setPhones(userPhones);
 			em.persist(userEntity);
 
 			user.setUserId(userEntity.getUserId());	
@@ -87,7 +97,30 @@ public class ListSortingTestBean {
 		else {
 			throw new InsufficientDataException("UserId is null");
 		}
+	}
+	
+	public com.example.pojo.Phone addPhone(com.example.pojo.Phone phone) throws InvalidDataException {
 
+		if(phone != null && phone.getUser() != null) {
+
+			///Note : We are using em.getReference here opposed to find, because we are not interested in user entity's state, we only want reference to that entity
+			//so that we can set user property of phone entity
+			com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User user = em.getReference(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class, phone.getUser().getUserId());
+			if(null != user) {
+
+				Phone phoneEntity = new Phone(null, phone.getPhoneNumber(), null);
+				phoneEntity.setUser(user);
+				em.persist(phoneEntity);
+			
+				phone.setPhoneId(phone.getPhoneId());
+			} else {
+				throw new InvalidDataException("Invalid user id : " +  phone.getUser().getUserId());
+			}
+		}
+
+		return phone;
+		//GENERATED SQL for for entire transaction is as below, note only one insert query executed on db, no select for user query.
+		//08:07:31,595 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: insert into phone (phone_number, user_id) values (?, ?)
 	}
 
 }
