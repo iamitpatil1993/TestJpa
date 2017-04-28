@@ -104,6 +104,14 @@
 		<servlet-name>ElementCollectionTestServlet</servlet-name>
 		<servlet-class>com.example.jpa.web.elementcollection.ElementCollectionTestServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>TestQuartz</display-name>
+		<servlet-name>TestQuartz</servlet-name>
+		<servlet-class>com.example.jpa.web.quartz.TestQuartz</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -148,6 +156,10 @@
 	<servlet-mapping>
 		<servlet-name>ElementCollectionTestServlet</servlet-name>
 		<url-pattern>/ElementCollectionTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TestQuartz</servlet-name>
+		<url-pattern>/TestQuartz</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>
