@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.relation.Relation;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ import javax.persistence.Table;
 
 import com.example.ejb.jpa.entities.collectionsorting.indexedlist.Phone;
 import com.example.ejb.jpa.entities.collectionsorting.nonindexedlist.Relative;
+import com.example.ejb.jpa.entities.elementcollection.PlacesLived;
 import com.example.ejb.jpa.entities.relationships.manytomany.Project;
 import com.example.ejb.jpa.entities.relationships.onetoonebidirectional.ParkingLot;
 
@@ -87,6 +89,19 @@ public class User implements Serializable {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="user", cascade=CascadeType.ALL)
 	private List<Phone> phones = new ArrayList<Phone>();
 
+	//Element Collection
+	//1.We need to tell provider that this one is element collection using ElementCollection annotation
+	//2.We should use @CollectionTable annotation to override default provided by provider. To customize table name, schema, join column
+	//3.Join column in Collection table will be foreign key to entity which embedding the list i.e parent
+	//4.Optionally we can specify fetch type in @ElementCollection annotation which is FetchType.LAZY by default
+	//5.Optionally we can use @AttributeOverride and @AttributeOverrides annotations to override the one or more attribute in embeddable class 
+	@ElementCollection(fetch=FetchType.LAZY)
+	@CollectionTable(name="user_places",
+					joinColumns=@JoinColumn(name="user_id")
+					)
+	@OrderColumn
+	private List<PlacesLived> places = new ArrayList<PlacesLived>();
+	
 	public List<Project> getProjects() {
 		return projects;
 	}
@@ -154,5 +169,19 @@ public class User implements Serializable {
 	public void addPhone(Phone phone) {
 		this.phones.add(phone);
 		phone.setUser(this);
+	}
+
+	public List<PlacesLived> getPlaces() {
+		return places;
+	}
+
+	public void setPlaces(List<PlacesLived> places) {
+		this.places = places;
+	}
+	
+	public void addPlace(PlacesLived place) {
+		
+		if(null != place)
+			this.places.add(place);
 	}
 }
