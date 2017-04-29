@@ -112,6 +112,13 @@
 		<servlet-class>com.example.jpa.web.quartz.TestQuartz</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>BuiltInTypeElementCollectionTestServlet</display-name>
+		<servlet-name>BuiltInTypeElementCollectionTestServlet</servlet-name>
+		<servlet-class>com.example.jpa.web.elementcollection.BuiltInTypeElementCollectionTestServlet</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -160,6 +167,10 @@
 	<servlet-mapping>
 		<servlet-name>TestQuartz</servlet-name>
 		<url-pattern>/TestQuartz</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>BuiltInTypeElementCollectionTestServlet</servlet-name>
+		<url-pattern>/BuiltInTypeElementCollectionTestServlet</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>

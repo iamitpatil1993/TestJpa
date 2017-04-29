@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
-    <deployment>
-        <dependencies>
-            <module name="org.quartz" export="true"/>
-        </dependencies>
-    </deployment>
+	<deployment>
+		<dependencies>
+			<!-- Here we actually define the dependencies on modules we defined in 
+				modules of Jboss This is jboss specific deployment descriptor to define the 
+				dependency of modules that we configured -->
+
+
+			<!-- To define dependency on module we need to define path from /jboss_home/modules 
+				to your_module/main main is not supposed to be included in path itself -->
+
+			<!-- we can define our own modules directory structure as we want in /jboss_home/modules 
+				and we can specify dependency on that custom modules as well here in same 
+				way as we do for standard modules, as long as our module directory has module.xml 
+				cofig file -->
+			<module name="org.quartz" export="true" />
+		</dependencies>
+	</deployment>
 </jboss-deployment-structure>

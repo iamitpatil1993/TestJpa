@@ -102,6 +102,13 @@ public class User implements Serializable {
 	@OrderColumn
 	private List<PlacesLived> places = new ArrayList<PlacesLived>();
 	
+	
+	//Element collection without embedded object, element collection of built in java types which does not require separate object/class to be defined
+	@ElementCollection
+	@CollectionTable(name="user_nickname", joinColumns=@JoinColumn(name="user_id"))
+	@OrderColumn(name="order_index")
+	private List<String> nickNames = new ArrayList<String>();
+	
 	public List<Project> getProjects() {
 		return projects;
 	}
@@ -183,5 +190,17 @@ public class User implements Serializable {
 		
 		if(null != place)
 			this.places.add(place);
+	}
+
+	public List<String> getNickNames() {
+		return nickNames;
+	}
+
+	public void setNickNames(List<String> nickNames) {
+		this.nickNames = nickNames;
+	}
+	
+	public void addNickName(String name) {
+		this.nickNames.add(name);
 	}
 }
