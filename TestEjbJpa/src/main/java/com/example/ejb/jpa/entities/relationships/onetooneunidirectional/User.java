@@ -106,6 +106,8 @@ public class User implements Serializable {
 	//Element collection without embedded object, element collection of built in java types which does not require separate object/class to be defined
 	@ElementCollection
 	@CollectionTable(name="user_nickname", joinColumns=@JoinColumn(name="user_id"))
+	//WE can use JoinTable annotation in place of CollectionTable annotation. both work in similar manner
+	//@JoinTable(name="user_nicknames", joinColumns=@JoinColumn(name="user_id"))
 	@OrderColumn(name="order_index")
 	private List<String> nickNames = new ArrayList<String>();
 	
