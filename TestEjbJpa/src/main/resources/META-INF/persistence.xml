@@ -26,6 +26,9 @@
 			 <!-- Possible Values : CREATE, DROP, DROP-AND-CREATE, NONE -->
 			<!-- <property name="javax.persistence.schema-generation.database.action" value="drop"/> -->
 			
+			<!-- there is no default value for this configuration parameter
+			Default behaviour when this property is not set is 'NOTHING'. Hibernate does not do anything
+			See the /Java Persistence/ Hibernate/Hibernate Online/hbm2ddl/java - Hibernate hbm2ddl - default.pdf -->
 			<property name="hibernate.hbm2ddl.auto" value="update"/>
 			
 		</properties>
