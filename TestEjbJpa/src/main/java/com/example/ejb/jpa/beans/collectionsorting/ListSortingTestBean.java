@@ -1,5 +1,6 @@
 package com.example.ejb.jpa.beans.collectionsorting;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.example.ejb.jpa.exceptions.InvalidDataException;
 import com.example.pojo.PlacesLived;
 import com.example.pojo.Relative;
 import com.example.pojo.User;
+import com.example.pojo.generic.StaticConstant;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -40,6 +42,7 @@ public class ListSortingTestBean {
 			List<Phone> userPhones = new ArrayList<Phone>();
 			com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User userEntity = new com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User();
 			userEntity.setName(user.getName());
+			userEntity.setGender(user.getGender());
 
 			for(com.example.pojo.Phone phone : user.getPhones()) {
 				userPhones.add(new Phone(null, phone.getPhoneNumber(), userEntity));
@@ -238,4 +241,82 @@ public class ListSortingTestBean {
 			throw new InsufficientDataException("UserId is null");
 		}
 	}
+
+
+	public User updateUser(User user) throws InsufficientDataException, InvalidDataException {
+
+		if(null != user) {
+
+			com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User userEntity = em.find(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class, user.getUserId());
+			if(null != userEntity) {
+
+				userEntity.setName(user.getName());
+				userEntity.setGender(user.getGender());
+				em.merge(userEntity);
+			}
+			else {
+
+				throw new InvalidDataException("Invalid User id");
+			}
+		}
+		else {
+			throw new InsufficientDataException("User is null");
+		}
+		return user;
+	}
+
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void getUsers() {
+
+		List<com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> users = em.createNamedQuery("User.findAllUsers", com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class)
+				.getResultList();
+
+		LOGGER.info("users found : " + users.size());
+		LOGGER.info("user are : ");
+		for(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User user : users)
+			LOGGER.info(user);
+	}
+
+	public void deleteUser(Integer userId) throws InvalidDataException, InsufficientDataException {
+		
+		if(null != userId) {
+			
+			//to delete/remove entity we must fetch that etity before removing it. Entity to be deleted must be managed entity
+			//in current persistence context.
+			com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User userEntity = em.find(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class, userId);
+			
+			//Need to check null otherwise provider will throw below exception at runtime and which we dont want to happen
+			//javax.ejb.EJBException: java.lang.IllegalArgumentException: attempt to create delete event with null entity
+			if(null != userEntity)
+				em.remove(userEntity);
+			else 
+				throw new InvalidDataException("Invalid user id : " + userId);
+			
+			//Observe the SQL created for cascade remove of post tags 
+		}
+		else {
+			throw new InsufficientDataException("Use Id to delete : " + userId);
+		}
+	}
+	
+	//SQL generated to delete single user
+/*			08:35:31,197 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select user0_.user_id as user1_15_0_, user0_.desk_id as desk4_15_0_, user0_.gender as gender15_0_, user0_.name as name15_0_ from user user0_ where user0_.user_id=?
+			08:35:31,226 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select parkinglot0_.parking_lot_id as parking1_10_0_, parkinglot0_.created_on as created2_10_0_, parkinglot0_.last_updated_on as last3_10_0_, parkinglot0_.parking_lot_user_id as parking4_10_0_ from parking_lot parkinglot0_ where parkinglot0_.parking_lot_user_id=?
+			08:35:31,231 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select phones0_.user_id as user3_15_1_, phones0_.phone_id as phone1_1_, phones0_.phone_id as phone1_9_0_, phones0_.phone_number as phone2_9_0_, phones0_.user_id as user3_9_0_ from phone phones0_ where phones0_.user_id=?
+			08:35:31,235 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select posts0_.postedby_user_id as postedby7_15_1_, posts0_.post_id as post1_1_, posts0_.post_id as post1_20_0_, posts0_.created_on as created2_20_0_, posts0_.updated_on as updated3_20_0_, posts0_.postedOn as postedOn20_0_, posts0_.text as text20_0_, posts0_.title as title20_0_, posts0_.postedby_user_id as postedby7_20_0_ from post posts0_ where posts0_.postedby_user_id=?
+			08:35:31,241 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select tags0_.post_id as post5_20_2_, tags0_.tag_id as tag1_2_, tags0_.tag_id as tag1_18_1_, tags0_.created_on as created2_18_1_, tags0_.updated_on as updated3_18_1_, tags0_.post_id as post5_18_1_, tags0_.tagedOn as tagedOn18_1_, tags0_.user_id as user6_18_1_, user1_.user_id as user1_15_0_, user1_.desk_id as desk4_15_0_, user1_.gender as gender15_0_, user1_.name as name15_0_ from tag tags0_ left outer join user user1_ on tags0_.user_id=user1_.user_id where tags0_.post_id=?
+			08:35:31,243 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select parkinglot0_.parking_lot_id as parking1_10_0_, parkinglot0_.created_on as created2_10_0_, parkinglot0_.last_updated_on as last3_10_0_, parkinglot0_.parking_lot_user_id as parking4_10_0_ from parking_lot parkinglot0_ where parkinglot0_.parking_lot_user_id=?
+			08:35:31,245 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select projects0_.user_id as user1_15_1_, projects0_.project_id as project2_1_, project1_.project_id as project1_13_0_, project1_.created_on as created2_13_0_, project1_.updated_on as updated3_13_0_, project1_.name as name13_0_ from user_project projects0_ inner join project project1_ on projects0_.project_id=project1_.project_id where projects0_.user_id=?
+			08:35:31,247 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select relatives0_.user_id as user4_15_1_, relatives0_.relative_id as relative1_1_, relatives0_.relative_id as relative1_22_0_, relatives0_.first_name as first2_22_0_, relatives0_.last_name as last3_22_0_, relatives0_.user_id as user4_22_0_ from relative relatives0_ where relatives0_.user_id=? order by relatives0_.first_name asc, relatives0_.last_name asc
+			08:35:31,248 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select usertags0_.user_id as user6_15_3_, usertags0_.tag_id as tag1_3_, usertags0_.tag_id as tag1_18_2_, usertags0_.created_on as created2_18_2_, usertags0_.updated_on as updated3_18_2_, usertags0_.post_id as post5_18_2_, usertags0_.tagedOn as tagedOn18_2_, usertags0_.user_id as user6_18_2_, post1_.post_id as post1_20_0_, post1_.created_on as created2_20_0_, post1_.updated_on as updated3_20_0_, post1_.postedOn as postedOn20_0_, post1_.text as text20_0_, post1_.title as title20_0_, post1_.postedby_user_id as postedby7_20_0_, user2_.user_id as user1_15_1_, user2_.desk_id as desk4_15_1_, user2_.gender as gender15_1_, user2_.name as name15_1_ from tag usertags0_ left outer join post post1_ on usertags0_.post_id=post1_.post_id left outer join user user2_ on post1_.postedby_user_id=user2_.user_id where usertags0_.user_id=?
+			08:35:31,255 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from user_nickname where user_id=?
+			08:35:31,256 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from user_places where user_id=?
+			08:35:31,259 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from phone where phone_id=?
+			08:35:31,260 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from tag where tag_id=?
+			08:35:31,261 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from tag where tag_id=?
+			08:35:31,262 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from post where post_id=?
+			08:35:31,264 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from user where user_id=?
+*/
+
 }

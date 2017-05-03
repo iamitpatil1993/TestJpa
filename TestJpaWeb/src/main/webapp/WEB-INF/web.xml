@@ -119,6 +119,20 @@
 		<servlet-name>BuiltInTypeElementCollectionTestServlet</servlet-name>
 		<servlet-class>com.example.jpa.web.elementcollection.BuiltInTypeElementCollectionTestServlet</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>PostRestHandler</display-name>
+		<servlet-name>PostRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.blogpost.PostRestHandler</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>TagRestHandler</display-name>
+		<servlet-name>TagRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.blogpost.TagRestHandler</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -171,6 +185,14 @@
 	<servlet-mapping>
 		<servlet-name>BuiltInTypeElementCollectionTestServlet</servlet-name>
 		<url-pattern>/BuiltInTypeElementCollectionTestServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>PostRestHandler</servlet-name>
+		<url-pattern>/PostRestHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>TagRestHandler</servlet-name>
+		<url-pattern>/TagRestHandler</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>

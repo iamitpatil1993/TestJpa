@@ -54,19 +54,19 @@
 					<version>${application.xml.versions}</version>
 					<generateApplicationXml>true</generateApplicationXml>
 					<filtering>true</filtering>
-					
+
 					<!-- Must not use below tag. Because it does not creates lib directory -->
 					<!-- <defaultJavaBundleDir>lib</defaultJavaBundleDir> -->
-					
-					<!-- Usse this tag, it create lib directory and puts jars in it for maven modules whose packaging in jar -->
+
+					<!-- Usse this tag, it create lib directory and puts jars in it for 
+						maven modules whose packaging in jar -->
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 
-					<!-- we need to specify only those modules here that will go to application.xml XtrPojo will not go in application.xml file -->
+					<!-- we need to specify only those modules here that will go to application.xml 
+						XtrPojo will not go in application.xml file -->
 					<modules>
-						<!-- <jarModule>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>TestPojo</artifactId>
-						</jarModule> -->
+						<!-- <jarModule> <groupId>${project.groupId}</groupId> <artifactId>TestPojo</artifactId> 
+							</jarModule> -->
 
 						<ejbModule>
 							<groupId>${project.groupId}</groupId>

@@ -2,7 +2,7 @@ package com.example.ejb.jpa.exceptions;
 
 import javax.ejb.ApplicationException;
 
-//mark thiss as application exception and set rollback true so that, container will rollback transation
+//mark this as application exception and set rollback true so that, container will rollback transaction
 @ApplicationException(rollback = true)
 public class InsufficientDataException extends Exception {
 

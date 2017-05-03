@@ -3,6 +3,8 @@ package com.example.pojo;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.pojo.generic.StaticConstant.Gender;
+
 
 
 public class User {
@@ -10,6 +12,7 @@ public class User {
 	
 	private Integer userId;
 	private String name;
+	private Gender gender;
 	private List<Relative> relatives = new ArrayList<Relative>();
 	private List<Phone> phones = new ArrayList<Phone>();
 
@@ -54,6 +57,12 @@ public class User {
 	public void setPhones(List<Phone> phones) {
 		this.phones = phones;
 	}
-	
-		
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
+	}
 }

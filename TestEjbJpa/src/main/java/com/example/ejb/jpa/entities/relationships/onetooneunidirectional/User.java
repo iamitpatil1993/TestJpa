@@ -2,7 +2,9 @@ package com.example.ejb.jpa.entities.relationships.onetooneunidirectional;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -12,6 +14,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,12 +23,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
+import com.example.ejb.jpa.entities.blogpostapp.Post;
+import com.example.ejb.jpa.entities.blogpostapp.Tag;
 import com.example.ejb.jpa.entities.collectionsorting.indexedlist.Phone;
 import com.example.ejb.jpa.entities.collectionsorting.nonindexedlist.Relative;
 import com.example.ejb.jpa.entities.elementcollection.PlacesLived;
@@ -33,6 +41,12 @@ import com.example.ejb.jpa.entities.relationships.onetoonebidirectional.ParkingL
 
 @Entity
 @Table(name="user")
+@NamedQueries({	
+		@NamedQuery(
+				name = "User.findAllUsers",
+				query = "SELECT u FROM User u" 
+				)
+})
 @Access(AccessType.FIELD)
 public class User implements Serializable {
 
@@ -60,14 +74,14 @@ public class User implements Serializable {
 
 
 	//Check what is difference between CascadeType.REMOVE and orphalRemove
-	@OneToOne(fetch=FetchType.LAZY)
+	@OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
 	@JoinColumn(name="desk_id")
 	private Desk desk;
 
-	@OneToOne(mappedBy="parkingLotUser", fetch=FetchType.LAZY)
+	@OneToOne(mappedBy="parkingLotUser", fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
 	private ParkingLot parkingLot;
 
-	@ManyToMany(fetch=FetchType.LAZY)
+	@ManyToMany(fetch=FetchType.LAZY, cascade=CascadeType.REMOVE)
 	@JoinTable(
 			name="user_project",
 			joinColumns=@JoinColumn(name="user_id"),
@@ -80,7 +94,7 @@ public class User implements Serializable {
 	//3.Set orderBy clause which will be used while loading this list first time into persistence context. This ordering takes place at database level
 	//i.e it will add "order by firstName ASC, lastName ASC" clause in select query. So very much efficient for large data as well
 	//Default ordering will be by primary key of association in ascending order
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
 	@OrderBy("firstName ASC, lastName ASC")
 	private List<Relative> relatives = new ArrayList<Relative>();
 
@@ -111,6 +125,18 @@ public class User implements Serializable {
 	@OrderColumn(name="order_index")
 	private List<String> nickNames = new ArrayList<String>();
 	
+	//prefer to use String opposed to ordinal for enums, they are more safer than ordinals
+	@Enumerated(EnumType.STRING)
+	private com.example.pojo.generic.StaticConstant.Gender gender;
+	
+	
+	//I want to cascade only remove operation
+	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
+	Set<Post> posts = new HashSet<Post>();
+	
+	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
+	private Set<Tag> userTags = new HashSet<Tag>();
+			
 	public List<Project> getProjects() {
 		return projects;
 	}
@@ -204,5 +230,69 @@ public class User implements Serializable {
 	
 	public void addNickName(String name) {
 		this.nickNames.add(name);
+	}
+
+	public com.example.pojo.generic.StaticConstant.Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(com.example.pojo.generic.StaticConstant.Gender gender) {
+		this.gender = gender;
+	}
+
+	public Set<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(Set<Post> posts) {
+		this.posts = posts;
+	}
+
+	public Set<Tag> getUserTags() {
+		return userTags;
+	}
+
+	public void setUserTags(Set<Tag> userTags) {
+		this.userTags = userTags;
+	}
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", name=" + name + ", desk=" + desk
+				+ ", parkingLot=" + parkingLot + ", projects=" + projects
+				+ ", relatives=" + relatives + ", phones=" + phones
+				+ ", places=" + places + ", nickNames=" + nickNames
+				+ ", gender=" + gender + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		
+		return null == this.userId ? super.hashCode() : this.userId;
+	}
+	
+	@Override
+	public boolean equals(Object user) {
+		
+		User user2 = null;
+		
+		if(this == user)
+			return true;
+					
+		if(null == user)
+			return false;
+		
+		if(User.class != user.getClass())
+			return false;
+		else
+			user2 = (User) user;
+		
+		if(this.userId == null || user2.getUserId() == null)
+			return false;
+		else if (this.userId.equals(user2.getUserId())) {
+			return true;
+		}
+		else 
+			return false;
 	}
 }
