@@ -1,8 +1,9 @@
 package com.example.jpa.web.quartz;
 
+import static org.quartz.CronScheduleBuilder.cronSchedule;
+import static org.quartz.DateBuilder.futureDate;
+import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
-
-import java.util.Date;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,17 +16,10 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
 import org.quartz.Trigger;
+import org.quartz.impl.StdScheduler;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.example.jpa.web.quartz.jobs.ScheduleJob;
-
-import static org.quartz.CronScheduleBuilder.cronSchedule;
-import static org.quartz.DateBuilder.futureDate;
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
-import static org.quartz.JobBuilder.*;
-import static org.quartz.TriggerBuilder.*;
-import static org.quartz.DateBuilder.*;
 
 
 public class TestQuartz extends HttpServlet {
@@ -65,6 +59,34 @@ public class TestQuartz extends HttpServlet {
 			// Schedule the job with the trigger 
 			scheduler.scheduleJob(job1, trigger); 
 
+			
+			//Job to send Careplan Survey Form Reminders
+			String cronExpressionForSurveyFormRminder = "0/30 * * * * ?";
+			LOGGER.info("cronExpressionForSurveyFormRminder  " + cronExpressionForSurveyFormRminder);
+			
+			if(!cronExpressionForSurveyFormRminder.isEmpty()) {
+				
+				LOGGER.info("cronExpressionForSurveyFormRminder is not empty ");
+				JobDetail jobDetail = newJob(ScheduleJob.class)
+						.withIdentity("CPN_SURVEY_FORM_REMINDER", StdScheduler.DEFAULT_GROUP)
+						.storeDurably()
+						.requestRecovery()
+						.build();
+
+				if(!scheduler.checkExists(jobDetail.getKey())) {
+
+					LOGGER.info(jobDetail.getKey() + " not exists");
+					Trigger ct = newTrigger()
+							.withIdentity("CPN_SURVEY_FORM_REMINDER")
+							.startAt(futureDate(30, IntervalUnit.SECOND))
+							.forJob(jobDetail)
+							.withSchedule(cronSchedule(cronExpressionForSurveyFormRminder))
+							.build();
+					
+					LOGGER.info("DATE : " + scheduler.scheduleJob(jobDetail, ct));
+				}
+			}
+			
 			//Start scheduler
 			scheduler.start();
 

@@ -126,7 +126,7 @@ public class PostBean {
 			
 			//to delete/remove entity we must fetch that etity before removing it. Entity to be deleted must be managed entity
 			//in current persistence context.
-			com.example.ejb.jpa.entities.blogpostapp.Post postEntity = em.find(com.example.ejb.jpa.entities.blogpostapp.Post.class, postId);
+			com.example.ejb.jpa.entities.blogpostapp.Post postEntity = em.getReference(com.example.ejb.jpa.entities.blogpostapp.Post.class, postId);
 			
 			//Need to check null otherwise provider will throw below exception at runtime and which we dont want to happen
 			//javax.ejb.EJBException: java.lang.IllegalArgumentException: attempt to create delete event with null entity

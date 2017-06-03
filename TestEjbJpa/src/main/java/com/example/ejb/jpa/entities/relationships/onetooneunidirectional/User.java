@@ -44,8 +44,9 @@ import com.example.ejb.jpa.entities.relationships.onetoonebidirectional.ParkingL
 @NamedQueries({	
 		@NamedQuery(
 				name = "User.findAllUsers",
-				query = "SELECT u FROM User u" 
+				query = "SELECT u FROM User u"
 				)
+				
 })
 @Access(AccessType.FIELD)
 public class User implements Serializable {

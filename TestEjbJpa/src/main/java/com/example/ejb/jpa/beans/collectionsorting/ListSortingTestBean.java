@@ -1,6 +1,5 @@
 package com.example.ejb.jpa.beans.collectionsorting;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +19,6 @@ import com.example.ejb.jpa.exceptions.InvalidDataException;
 import com.example.pojo.PlacesLived;
 import com.example.pojo.Relative;
 import com.example.pojo.User;
-import com.example.pojo.generic.StaticConstant;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -319,4 +317,15 @@ public class ListSortingTestBean {
 			08:35:31,264 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from user where user_id=?
 */
 
+
+	void foo() {
+
+
+		List<Integer> ids = em.createQuery("SELECT f.id from foo f where f.dob > : dob order by f.dob")
+				.getResultList();
+		
+		List<Object> foos = em.createQuery("select f.fnma, f.lname, f.dob from foo f where f.id IN (:ids)")
+				.setParameter("id", ids.subList(0, 100))
+				.getResultList();
+	}
 }
