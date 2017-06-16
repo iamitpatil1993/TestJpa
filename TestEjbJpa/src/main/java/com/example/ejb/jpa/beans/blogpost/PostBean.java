@@ -7,8 +7,17 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
+import javax.enterprise.inject.Typed;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.apache.log4j.Logger;
 
@@ -142,5 +151,99 @@ public class PostBean {
 		}
 		return false;
 	}
+	
+	public void searchPost(Integer userId, String title, String text, String postedBy) {
+		
+		LOGGER.info("Inside searchPost with userId :: " + userId + " title :: " + title + " text :: " + text + " postedBy :: " + postedBy);
+	
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<com.example.ejb.jpa.entities.blogpostapp.Post> criteria = cb.createQuery(com.example.ejb.jpa.entities.blogpostapp.Post.class);
+		Root<com.example.ejb.jpa.entities.blogpostapp.Post> post = criteria.from(com.example.ejb.jpa.entities.blogpostapp.Post.class);
+		criteria.select(post);
+		Join<com.example.ejb.jpa.entities.blogpostapp.Post, User> postedByUser = post.join("user", JoinType.LEFT);
+		
+		
+		Predicate disjunction = cb.disjunction();
+		Predicate conjunction = cb.conjunction();
+		if(null != title) {
+			disjunction = cb.or(disjunction, cb.like(post.<String>get("title"), cb.parameter(String.class, "title")));	
+		}
+		
+		if(null != text) {
+			disjunction = cb.or(disjunction, cb.like(post.<String>get("text"), cb.parameter(String.class, "text")));
+		}
+		
+		if(null != userId) {
+			conjunction = cb.and(conjunction, cb.equal(post.get("user").<Integer>get("userId"), cb.parameter(Integer.class, "userId")));
+		}
+		
+		if(null != postedBy) {
+			disjunction = cb.or(disjunction, cb.like(postedByUser.<String>get("name"), cb.parameter(String.class, "postedBy")));	
+		}
+		
+		LOGGER.info("disjunction.getExpressions().size() == " + disjunction.getExpressions().size());
+		criteria.where(cb.and(conjunction, disjunction.getExpressions().size() == 0 ? disjunction.not() : disjunction));
+		
+		TypedQuery<com.example.ejb.jpa.entities.blogpostapp.Post> posts = em.createQuery(criteria);
+		
+		if(null != title)
+			posts.setParameter("title", "%" + title + "%");
+		
+		if(null != text)
+			posts.setParameter("text",  "%" + text + "%");
+		
+		if(null != userId)
+			posts.setParameter("userId", userId);
+		
+		if(null != postedBy)
+			posts.setParameter("postedBy", "%" + postedBy + "%");
+		
+		List<com.example.ejb.jpa.entities.blogpostapp.Post> postList = posts.getResultList();
+		LOGGER.info("Post COunt is :: " + postList.size());
+		LOGGER.info("Post are :: ");
+		
+		for(com.example.ejb.jpa.entities.blogpostapp.Post post2 : postList)
+			LOGGER.info(post2);
+		
+	}
+	
+	
+	//This method fetchs users along with their all posts
+	//This method uses criteria fetch join to eagerly fetch lazy relation "posts" in single query.
+	//Best part of fetch join is that if we use it with Criteria API ALONG WITH DISTINCT and we fetch collection association then, unlike jpql it does not 
+	//returns duplicate record of parent for each value child in collection.
+	
+	//If we do not use distinct in below query it will return duplicate records of user instance for each post.
+	//Here we get posts array assigned automatically to each user object.
+	//I tried with same in JPQL but could not found way.
+	
+	//NOTE:Criteia api first select Cartesian product and then creates object graph in memory. So this can be inefficient in case of larger value collections.
+	//if collections are small like user addresses, phone numbers then we can go ahead with this approach. But not with large value colletions like 
+	//back transactions against saving account 
+	public void displayPostUsingCriteriaFetch() {
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<User> criteria = cb.createQuery(User.class);
+
+		Root<User> user = criteria.from(User.class);
+		user.fetch("posts");
+		
+		criteria.select(user);
+		
+		//This is most important line. This distinct works as, it select distinct user like it clubs the user object and assign list of it's post to 
+		//it
+		criteria.distinct(true);
+		
+		TypedQuery<User> typedQuery = em.createQuery(criteria);
+		List<User> users = typedQuery.getResultList();
+		
+		LOGGER.info("users.size() :: " + users.size());
+		for(User tempUser : users) {
+		
+			LOGGER.info("username :: " + tempUser.getName());
+			LOGGER.info("posts :: " + tempUser.getPosts());
+		}
+	}
+	
 }
 

@@ -21,6 +21,16 @@ public class User {
 		
 	}
 	
+	
+	
+	public User(Integer userId, String name) {
+		super();
+		this.userId = userId;
+		this.name = name;
+	}
+
+
+
 	public User(Integer userId) {
 		super();
 		this.userId = userId;

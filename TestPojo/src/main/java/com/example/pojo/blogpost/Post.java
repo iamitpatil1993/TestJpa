@@ -28,6 +28,18 @@ public class Post {
 		this.postedOn = new Date();
 	}
 	
+	
+	
+	public Post(Integer postId, String title, String text, Date postedOn) {
+		super();
+		this.postId = postId;
+		this.title = title;
+		this.text = text;
+		this.postedOn = postedOn;
+	}
+
+
+
 	public Post() {
 		super();
 	}

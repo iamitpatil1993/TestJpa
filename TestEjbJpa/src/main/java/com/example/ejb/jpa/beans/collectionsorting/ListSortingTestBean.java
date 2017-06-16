@@ -1,6 +1,8 @@
 package com.example.ejb.jpa.beans.collectionsorting;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,9 +12,19 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 import org.apache.log4j.Logger;
 
+import com.example.ejb.jpa.entities.blogpostapp.Post;
 import com.example.ejb.jpa.entities.collectionsorting.indexedlist.Phone;
 import com.example.ejb.jpa.exceptions.InsufficientDataException;
 import com.example.ejb.jpa.exceptions.InvalidDataException;
@@ -277,29 +289,29 @@ public class ListSortingTestBean {
 	}
 
 	public void deleteUser(Integer userId) throws InvalidDataException, InsufficientDataException {
-		
+
 		if(null != userId) {
-			
+
 			//to delete/remove entity we must fetch that etity before removing it. Entity to be deleted must be managed entity
 			//in current persistence context.
 			com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User userEntity = em.find(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class, userId);
-			
+
 			//Need to check null otherwise provider will throw below exception at runtime and which we dont want to happen
 			//javax.ejb.EJBException: java.lang.IllegalArgumentException: attempt to create delete event with null entity
 			if(null != userEntity)
 				em.remove(userEntity);
 			else 
 				throw new InvalidDataException("Invalid user id : " + userId);
-			
+
 			//Observe the SQL created for cascade remove of post tags 
 		}
 		else {
 			throw new InsufficientDataException("Use Id to delete : " + userId);
 		}
 	}
-	
+
 	//SQL generated to delete single user
-/*			08:35:31,197 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select user0_.user_id as user1_15_0_, user0_.desk_id as desk4_15_0_, user0_.gender as gender15_0_, user0_.name as name15_0_ from user user0_ where user0_.user_id=?
+	/*			08:35:31,197 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select user0_.user_id as user1_15_0_, user0_.desk_id as desk4_15_0_, user0_.gender as gender15_0_, user0_.name as name15_0_ from user user0_ where user0_.user_id=?
 			08:35:31,226 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select parkinglot0_.parking_lot_id as parking1_10_0_, parkinglot0_.created_on as created2_10_0_, parkinglot0_.last_updated_on as last3_10_0_, parkinglot0_.parking_lot_user_id as parking4_10_0_ from parking_lot parkinglot0_ where parkinglot0_.parking_lot_user_id=?
 			08:35:31,231 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select phones0_.user_id as user3_15_1_, phones0_.phone_id as phone1_1_, phones0_.phone_id as phone1_9_0_, phones0_.phone_number as phone2_9_0_, phones0_.user_id as user3_9_0_ from phone phones0_ where phones0_.user_id=?
 			08:35:31,235 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: select posts0_.postedby_user_id as postedby7_15_1_, posts0_.post_id as post1_1_, posts0_.post_id as post1_20_0_, posts0_.created_on as created2_20_0_, posts0_.updated_on as updated3_20_0_, posts0_.postedOn as postedOn20_0_, posts0_.text as text20_0_, posts0_.title as title20_0_, posts0_.postedby_user_id as postedby7_20_0_ from post posts0_ where posts0_.postedby_user_id=?
@@ -315,7 +327,7 @@ public class ListSortingTestBean {
 			08:35:31,261 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from tag where tag_id=?
 			08:35:31,262 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from post where post_id=?
 			08:35:31,264 INFO  [stdout] (http--0.0.0.0-8080-1) Hibernate: delete from user where user_id=?
-*/
+	 */
 
 
 	void foo() {
@@ -323,9 +335,251 @@ public class ListSortingTestBean {
 
 		List<Integer> ids = em.createQuery("SELECT f.id from foo f where f.dob > : dob order by f.dob")
 				.getResultList();
-		
+
 		List<Object> foos = em.createQuery("select f.fnma, f.lname, f.dob from foo f where f.id IN (:ids)")
 				.setParameter("id", ids.subList(0, 100))
 				.getResultList();
 	}
+
+	public void getUsersByCriteriaAPI(String name) {
+
+		//1. get criteria builder
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+
+		//2. Create Criteria
+		CriteriaQuery<String> query = cb.createQuery(String.class);
+
+		//3. Create query root
+		Root<com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> users = query.from(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class);
+
+		//4.Specify select clause
+		query.select(users.<String>get("name"));
+
+		if(null != name) {
+			query.where(cb.like(users.<String>get("name"), name + "%"));
+		}
+
+		TypedQuery<String> typedQuery = em.createQuery(query);
+		List<String> userList = typedQuery.getResultList();
+
+		LOGGER.info("users found using Criteria Query are  :: " + userList.size());
+		LOGGER.info("user are using Criteria Query are  :: ");
+		for(String user : userList)
+			LOGGER.info(user);		
+	}
+
+
+	public void displayPostMultiSelectUsingObjectArray(Integer userId) {
+
+		LOGGER.info("Inside displayPostMultiSelectUsingObjectArray with userId :: " + userId);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Object[]> query = cb.createQuery(Object[].class);
+
+		Root<Post> root = query.from(Post.class);
+		Join<Post, com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> postedBy = root.join("user", JoinType.LEFT);
+
+		query.select(cb.array(root.get("postId"), root.get("title"), root.get("text"), postedBy.get("name").alias("postedByUser"), root.get("postedOn")));
+
+		//we can achieve same using below code as well
+		//query.multiselect(root.get("postId"), root.get("title"), root.get("text"), postedBy.get("name").alias("postedByUser"), root.get("postedOn"));
+
+
+		if(null != userId) {
+			query.where(cb.equal(root.get("user").get("userId"), cb.parameter(Integer.class, "userId")));
+		}
+
+		TypedQuery<Object[]> typedQuery = em.createQuery(query);
+
+		if(null != userId) {
+			typedQuery.setParameter("userId", userId);
+		}
+
+		List<Object[]> posts = typedQuery.getResultList();
+		for(Object[] obj : posts) {
+
+			LOGGER.info("postId :: " + obj[0]);
+			LOGGER.info("title :: " + obj[1]);
+			LOGGER.info("text :: " + obj[2]);
+			LOGGER.info("postedByUser :: " + obj[3]);
+			LOGGER.info("postedOn :: " + obj[4]);
+		}
+	}
+
+
+	public void displayPostMultiselectUsingTuple(Integer userId) {
+
+
+		LOGGER.info("Inside displayPostMultiselectUsingTuple with userId :: " + userId);
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> criteria = cb.createTupleQuery();
+
+		Root<Post> post = criteria.from(Post.class);
+		Join<Post, com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> user = post.join("user", JoinType.LEFT);
+
+		criteria.select(cb.tuple(post.get("postId").alias("postId"), post.get("title").alias("title"), post.get("text").alias("text"), user.get("name").alias("postedByUser"), post.get("postedOn").alias("postedOn")));
+
+		//we can achieve same result using below code as well
+		//criteria.multiselect(post.get("postId").alias("postId"), post.get("title").alias("title"), post.get("text").alias("text"), user.get("name").alias("postedByUser"), post.get("postedOn").alias("postedOn"));
+
+		criteria.orderBy(cb.asc(post.<String>get("title")),  cb.desc(post.<Date>get("postedOn")));
+
+		if(user != null) {
+			criteria.where(cb.equal(user.get("userId"), cb.parameter(Integer.class, "userId")));
+		}
+
+		TypedQuery<Tuple> typedQuery = em.createQuery(criteria);
+		if(userId != null) {
+			typedQuery.setParameter("userId", userId);
+		}
+
+		List<Tuple> tuples = typedQuery.getResultList();
+		for(Tuple tuple : tuples) {
+
+			LOGGER.info("---------------- ++++++++++ ------------------");
+			LOGGER.info("postId :: " + tuple.get("postId"));
+			LOGGER.info("title :: " + tuple.get("title", String.class));//To avoid manual type casting we can use overloaded method which takes destination type as argument
+			LOGGER.info("text :: " + tuple.get("text"));
+			LOGGER.info("postedByUser :: " + tuple.get("postedByUser"));
+			LOGGER.info("postedOn :: " + tuple.get("postedOn"));
+		}
+	}
+
+
+	public void displayPostUsingConstructorExpression(Integer userId) {
+
+		//(Integer userId, String name, Gender gender)
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<com.example.pojo.blogpost.Post> criteria = cb.createQuery(com.example.pojo.blogpost.Post.class);
+
+		Root<Post> post = criteria.from(Post.class);
+		Join<Post, com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> user = post.join("user", JoinType.LEFT);
+
+		//(Integer postId, String title, String text, Date postedOn, User user) 
+		criteria.select(cb.construct(com.example.pojo.blogpost.Post.class, post.<Integer>get("postId"), post.<String>get("title"), post.<String>get("text"), post.<Date>get("postedOn")));
+
+
+		criteria.orderBy(cb.asc(post.<String>get("title")),  cb.desc(post.<Date>get("postedOn")));
+
+		if(user != null) {
+			criteria.where(cb.equal(user.get("userId"), cb.parameter(Integer.class, "userId")));
+		}
+
+		TypedQuery<com.example.pojo.blogpost.Post> typedQuery = em.createQuery(criteria);
+		if(userId != null) {
+			typedQuery.setParameter("userId", userId);
+		}
+
+		List<com.example.pojo.blogpost.Post> posts = typedQuery.getResultList();
+		for(com.example.pojo.blogpost.Post tempPost : posts) {
+
+			LOGGER.info("---------------- ++++++++++ ------------------");
+			LOGGER.info(tempPost);
+		}
+	}
+
+
+	//This is subquery example : Non Co related Subquery
+	public void searchUserByPostTitleUsingNonCorelatedSubQuery(String title) {
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> criteria = cb.createQuery(String.class);
+
+		Root<com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> user = criteria.from(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class);
+		criteria.select(user.<String>get("name"));
+
+		if(title != null) {
+
+			Subquery<com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> subCriteria = criteria.subquery(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class);
+			Root<Post> postRoot = subCriteria.from(Post.class);
+			Join<Post, com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> postedBy = postRoot.join("user", JoinType.INNER);
+
+			subCriteria.select(postedBy);
+			subCriteria.where(cb.like(postRoot.<String>get("title"), cb.parameter(String.class, "title")));
+
+			criteria.where(cb.in(user).value(subCriteria));
+		}
+
+		TypedQuery<String> typedQuery = em.createQuery(criteria);
+
+		if(null != title) {
+
+			typedQuery.setParameter("title", "%" + title + "%");
+		}
+
+		List<String> userNames = typedQuery.getResultList();
+
+		LOGGER.info("users who has post with title :: " + title + " are as below :: ");
+		for(String userName : userNames)
+			LOGGER.info("userName :: " + userName);
+	}
+
+	//This is subquery example : Non related Subquery, with co-relation in where clause
+	public void searchUserByPostTitleUsingCorelatedSubquery(String title) {
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> criteria =  cb.createQuery(String.class);
+
+		Root<com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> user = criteria.from(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class);
+		criteria.select(user.<String>get("name"));
+
+		if(title != null) {
+
+			Subquery<Integer> subCriteria = criteria.subquery(Integer.class);
+			Root<Post> subRoot = subCriteria.from(Post.class);
+			Join<Post, com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> postedByUser = subRoot.join("user", JoinType.INNER);
+			subCriteria.select(postedByUser.<Integer>get("userId"));
+
+			subCriteria.where(cb.like(subRoot.<String>get("title"), cb.parameter(String.class, "title")), cb.equal(user, postedByUser));
+
+			criteria.where(cb.exists(subCriteria));
+		}
+
+		TypedQuery<String> typedQuery = em.createQuery(criteria);
+		if(title != null) {
+			typedQuery.setParameter("title", "%" + title + "%");
+		}
+
+		for (String userName : typedQuery.getResultList()) {
+			LOGGER.info("user ::  " + userName);
+		}
+
+	}
+
+
+	//This is subquery example : Non related Subquery, with co-relation in where clause
+	public void searchUserByPostTitleUsingCorelatedSubqueryWithPaentRootInSubQueryJoinClause(String title) {
+
+		LOGGER.info("Inside searchUserByPostTitleUsingCorelatedSubqueryWithPaentRootInSubQueryJoinClause with title :: " + title);
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<String> criteria =  cb.createQuery(String.class);
+
+		Root<com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> user = criteria.from(com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User.class);
+		criteria.select(user.<String>get("name"));
+
+		if(title != null) {
+
+			Subquery<Integer> subCriteria = criteria.subquery(Integer.class);
+
+			//correlate() is the method that we use to use parent query roots or join in subquery from clause.
+			//we can not use from clause because from clause only takes entity class type as argument and we want to pass Expression instance 
+			Root<com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User> subRoot = subCriteria.correlate(user);
+			Join<com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User, Post> post = subRoot.join("posts", JoinType.INNER);
+			subCriteria.select(post.<Integer>get("postId"));
+
+			subCriteria.where(cb.like(post.<String>get("title"), cb.parameter(String.class, "title")));
+
+			criteria.where(cb.exists(subCriteria));
+		}
+
+		TypedQuery<String> typedQuery = em.createQuery(criteria);
+		if(title != null) {
+			typedQuery.setParameter("title", "%" + title + "%");
+		}
+
+		for (String userName : typedQuery.getResultList()) {
+			LOGGER.info("user ::  " + userName);
+		}
+	}
+
 }

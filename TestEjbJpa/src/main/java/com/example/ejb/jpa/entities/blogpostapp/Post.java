@@ -31,6 +31,12 @@ import com.example.ejb.jpa.entities.relationships.onetooneunidirectional.User;
 @Access(AccessType.FIELD)
 public class Post implements Serializable {
 
+	@Override
+	public String toString() {
+		return "Post [postId=" + postId + ", title=" + title + ", text=" + text
+				+ ", postedOn=" + postedOn + "]";
+	}
+
 	/**
 	 * 
 	 */

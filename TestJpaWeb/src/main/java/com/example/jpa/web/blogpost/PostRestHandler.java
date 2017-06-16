@@ -16,7 +16,6 @@ import com.example.ejb.jpa.exceptions.InsufficientDataException;
 import com.example.ejb.jpa.exceptions.InvalidDataException;
 import com.example.pojo.User;
 import com.example.pojo.blogpost.Post;
-import com.example.pojo.generic.StaticConstant.Gender;
 
 /**
  * Servlet implementation class PostRestHandler
@@ -39,8 +38,9 @@ public class PostRestHandler extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		postBean.displayPosts(Integer.parseInt(request.getParameter("userId")) );
-
+		//postBean.displayPosts(Integer.parseInt(request.getParameter("userId")) );
+		postBean.searchPost(null != request.getParameter("userId") ? Integer.parseInt(request.getParameter("userId")) : null, request.getParameter("title"), request.getParameter("text"), request.getParameter("postedBy"));
+		//postBean.displayPostUsingCriteriaFetch();
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

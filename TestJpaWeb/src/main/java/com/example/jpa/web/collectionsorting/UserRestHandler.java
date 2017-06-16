@@ -41,7 +41,15 @@ public class UserRestHandler extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		listSortingTestBean.getUsers();
+		//listSortingTestBean.getUsers();
+		//listSortingTestBean.getUsersByCriteriaAPI(request.getParameter("name"));
+		//listSortingTestBean.displayPostMultiSelectUsingObjectArray(null != request.getParameter("userId") ? Integer.valueOf(request.getParameter("userId")) : null);
+		//listSortingTestBean.displayPostMultiselectUsingTuple(null != request.getParameter("userId") ? Integer.valueOf(request.getParameter("userId")) : null);
+		//listSortingTestBean.displayPostUsingConstructorExpression(null != request.getParameter("userId") ? Integer.valueOf(request.getParameter("userId")) : null);
+		
+		//listSortingTestBean.searchUserByPostTitleUsingNonCorelatedSubQuery(request.getParameter("title"));
+		//listSortingTestBean.searchUserByPostTitleUsingCorelatedSubquery(request.getParameter("title"));
+		listSortingTestBean.searchUserByPostTitleUsingCorelatedSubqueryWithPaentRootInSubQueryJoinClause(request.getParameter("title"));
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
