@@ -9,9 +9,9 @@ public class Employee {
 	private Float salary;
 	private Date dateOfJoining;
 	private boolean isDeleted;
-	
-	
-	
+	private Date dob;
+	private String fNamel;
+	private String lNSame;
 	
 	public Employee(Integer employeeId, String name, Float salary,
 			Date dateOfJoining, boolean isDeleted) {
@@ -60,12 +60,37 @@ public class Employee {
 		this.isDeleted = isDeleted;
 	}
 	
+	public Date getDob() {
+		return dob;
+	}
+
+	public void setDob(Date dob) {
+		this.dob = dob;
+	}
+
 	
+	public String getlNSame() {
+		return lNSame;
+	}
+
+	public void setlNSame(String lNSame) {
+		this.lNSame = lNSame;
+	}
+
+	public String getfNamel() {
+		return fNamel;
+	}
+
+	public void setfNamel(String fNamel) {
+		this.fNamel = fNamel;
+	}
+
 	@Override
 	public String toString() {
 		return "Employee [employeeId=" + employeeId + ", name=" + name
 				+ ", salary=" + salary + ", dateOfJoining=" + dateOfJoining
-				+ "]";
+				+ ", isDeleted=" + isDeleted + ", dob=" + dob + ", fNamel="
+				+ fNamel + ", lNSame=" + lNSame + "]";
 	}
 	
 

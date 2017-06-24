@@ -133,6 +133,13 @@
 		<servlet-name>TagRestHandler</servlet-name>
 		<servlet-class>com.example.jpa.web.blogpost.TagRestHandler</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>MSCEmployeeRestHandler</display-name>
+		<servlet-name>MSCEmployeeRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.ingeritance.mappedsuperclass.MSCEmployeeRestHandler</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -193,6 +200,10 @@
 	<servlet-mapping>
 		<servlet-name>TagRestHandler</servlet-name>
 		<url-pattern>/TagRestHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>MSCEmployeeRestHandler</servlet-name>
+		<url-pattern>/MSCEmployeeRestHandler</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>
