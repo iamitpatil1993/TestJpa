@@ -140,6 +140,20 @@
 		<servlet-name>MSCEmployeeRestHandler</servlet-name>
 		<servlet-class>com.example.jpa.web.ingeritance.mappedsuperclass.MSCEmployeeRestHandler</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>PersonRestHandler</display-name>
+		<servlet-name>PersonRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.PersonRestHandler</servlet-class>
+	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>STEmployeeRestHandler</display-name>
+		<servlet-name>STEmployeeRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.ingeritance.singletable.STEmployeeRestHandler</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -204,6 +218,14 @@
 	<servlet-mapping>
 		<servlet-name>MSCEmployeeRestHandler</servlet-name>
 		<url-pattern>/MSCEmployeeRestHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>PersonRestHandler</servlet-name>
+		<url-pattern>/PersonRestHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>STEmployeeRestHandler</servlet-name>
+		<url-pattern>/STEmployeeRestHandler</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>

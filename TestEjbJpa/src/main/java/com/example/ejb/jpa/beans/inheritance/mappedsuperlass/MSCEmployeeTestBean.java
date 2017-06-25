@@ -1,4 +1,4 @@
-package com.example.ejb.jpa.beans.inheritance;
+package com.example.ejb.jpa.beans.inheritance.mappedsuperlass;
 
 import java.util.List;
 

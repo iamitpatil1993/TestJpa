@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.example.ejb.jpa.beans.inheritance.MSCEmployeeTestBean;
+import com.example.ejb.jpa.beans.inheritance.mappedsuperlass.MSCEmployeeTestBean;
 import com.example.ejb.jpa.exceptions.InsufficientDataException;
 import com.example.pojo.generic.StaticConstant;
 import com.example.pojo.helloworldjpa.Employee;
