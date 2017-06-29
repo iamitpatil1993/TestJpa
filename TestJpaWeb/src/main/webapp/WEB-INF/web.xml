@@ -154,6 +154,13 @@
 		<servlet-name>STEmployeeRestHandler</servlet-name>
 		<servlet-class>com.example.jpa.web.ingeritance.singletable.STEmployeeRestHandler</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>JEmployeeRestHandler</display-name>
+		<servlet-name>JEmployeeRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.ingeritance.joined.JEmployeeRestHandler</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -226,6 +233,10 @@
 	<servlet-mapping>
 		<servlet-name>STEmployeeRestHandler</servlet-name>
 		<url-pattern>/STEmployeeRestHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JEmployeeRestHandler</servlet-name>
+		<url-pattern>/JEmployeeRestHandler</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>

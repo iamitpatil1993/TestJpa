@@ -3,6 +3,7 @@ package com.example.pojo.helloworldjpa;
 import java.util.Date;
 
 import com.example.pojo.Person;
+import com.example.pojo.generic.StaticConstant.EmployeeDiscriminatorValue;
 import com.example.pojo.generic.StaticConstant.STEmployeeType;
 
 //We should implement Inheritance at DTO level as well in the same way as we did for entities. But for time being, I am keeping it 
@@ -19,7 +20,7 @@ public class Employee {
 	private String lNSame;
 
 	//This is used to distinguish the employee type (as 'DiscriminatorValue')
-	private STEmployeeType empType;
+	private EmployeeDiscriminatorValue empType;
 
 	//STContractEmployee Fields
 	private Integer dailyRate;
@@ -150,14 +151,6 @@ public class Employee {
 		this.pension = pension;
 	}
 
-	public STEmployeeType getEmpType() {
-		return empType;
-	}
-
-	public void setEmpType(STEmployeeType empType) {
-		this.empType = empType;
-	}
-
 	public Person getPerson() {
 		return person;
 	}
@@ -172,6 +165,14 @@ public class Employee {
 
 	public void setVacation(Integer vacation) {
 		this.vacation = vacation;
+	}
+
+	public EmployeeDiscriminatorValue getEmpType() {
+		return empType;
+	}
+
+	public void setEmpType(EmployeeDiscriminatorValue empType) {
+		this.empType = empType;
 	}
 
 	@Override

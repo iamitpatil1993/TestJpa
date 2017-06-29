@@ -1,4 +1,4 @@
-package com.example.jpa.web.ingeritance.singletable;
+package com.example.jpa.web.ingeritance.joined;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,25 +20,27 @@ import com.example.pojo.generic.StaticConstant;
 import com.example.pojo.generic.StaticConstant.EmployeeDiscriminatorValue;
 import com.example.pojo.helloworldjpa.Employee;
 
-/**
- * Servlet implementation class STEmployeeRestHandler
- */
-public class STEmployeeRestHandler extends HttpServlet {
+public class JEmployeeRestHandler extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER;
+    private static final Logger LOGGER;
 
+    @EJB(beanName = "JEmployeeBean")
+	private InheritanceEmployeeBeanLocal jEmployeeBean;
+    
 	static {
-		LOGGER = Logger.getLogger(STEmployeeRestHandler.class);
+		LOGGER = Logger.getLogger(JEmployeeRestHandler.class);
 	}
 
-	public STEmployeeRestHandler() {
+	public JEmployeeRestHandler() {
 		super();
 	}
 
-	@EJB(beanName="STEmployeeBean")
-	private InheritanceEmployeeBeanLocal stEmployeeBean;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		jEmployeeBean.findAll();
+	}
 
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		PrintWriter printWriter = response.getWriter();
@@ -51,7 +53,6 @@ public class STEmployeeRestHandler extends HttpServlet {
 		try {
 			employee.setDateOfJoining(dateFormat.parse(request.getParameter("joiningDate")));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -64,7 +65,7 @@ public class STEmployeeRestHandler extends HttpServlet {
 		employee.setHourlyRate(Integer.parseInt(request.getParameter("hourlyRate")));
 
 		try {
-			stEmployeeBean.addEmployee(employee);
+			jEmployeeBean.addEmployee(employee);
 			printWriter.println("Employee Saved Successfully :: " + employee);
 			printWriter.flush();
 			response.flushBuffer();
@@ -74,24 +75,6 @@ public class STEmployeeRestHandler extends HttpServlet {
 			printWriter.flush();
 			response.flushBuffer();
 		}
-	}
-
-
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
-		//stEmployeeBean.findAll();
-		/*try {
-			stEmployeeBean.findAllEmpType(STEmployeeDiscriminatorValue.valueOf(request.getParameter("empType")));
-		} catch (InvalidDataException e) {
-			PrintWriter printWriter = response.getWriter();
-			printWriter.println("Invalid employee type :: " + request.getParameter("empType"));
-			printWriter.flush();
-			response.flushBuffer();
-		}*/
-		
-		stEmployeeBean.findAllCountByGroup();
 	}
 
 }
