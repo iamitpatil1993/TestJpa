@@ -54,16 +54,33 @@
 			<version>${apache.commons.file-upload.version}</version>
 		</dependency>
 
+		<!-- We have added custom module for quartz, so no need to take these jars 
+			in deployment artifact i.e war so making it's scope to provided because jboss 
+			will load module for quartz at deployment time, by reading jboss-deployment-strucuture.xml -->
+		<!-- This is exacty similar to javax-api which container provides to us. 
+			In same way we have configured a module which jboss will load at deployment 
+			time, and will put all required classes in class path. So no need to package 
+			these jars. -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz</artifactId>
 			<version>${quartz.version}</version>
+			<scope>provided</scope> <!-- above comment added especially for scope tag -->
 		</dependency>
+
+		<!-- We have added custom module for quartz, so no need to take these jars 
+			in deployment artifact i.e war so making it's scope to provided because jboss 
+			will load module for quartz at deployment time, by reading jboss-deployment-strucuture.xml -->
+		<!-- This is exacty similar to javax-api which container provides to us. 
+			In same way we have configured a module which jboss will load at deployment 
+			time, and will put all required classes in class path. So no need to package 
+			these jars. -->
 
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
 			<artifactId>quartz-jobs</artifactId>
 			<version>${quartz.version}</version>
+			<scope>provided</scope><!-- above comment added especially for scope tag -->
 		</dependency>
 	</dependencies>
 

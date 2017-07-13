@@ -44,6 +44,8 @@
 		<!-- Quartz version -->
 		<quartz.version>2.2.1</quartz.version>
 
+		<!-- Hiberate version -->
+		<org.hibernate.version>4.1.1.Final</org.hibernate.version>
 
 	</properties>
 

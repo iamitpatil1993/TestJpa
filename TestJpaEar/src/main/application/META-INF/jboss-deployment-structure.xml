@@ -14,6 +14,41 @@
 				and we can specify dependency on that custom modules as well here in same 
 				way as we do for standard modules, as long as our module directory has module.xml 
 				cofig file -->
+
+			<!-- Subdeployment modules (the WAR and JAR deployments within this EAR) 
+				have an automatic dependency on the parent module. However they do not have 
+				automatic dependencies on each other. This is called subdeployment isolation 
+				and can be disabled on a per deployment basis or for the entire application 
+				server. -->
+			<!-- Means TestEjbJPA, TestJpaWeb are sub modules of this ear. So there 
+				are total 3 submodules in this ear, 2 of them are TestEjbWeb and TestEjbJpa 
+				and third is Ear/lib directory. Out of these TestEjbJpa and TestJpaWeb submodules 
+				has implicit dependency on parent project i.e TestJpaEar, and hence we should 
+				export all the static dependencies declared here, sso that all modules dependent 
+				on this module i.e TEstJpaEar will get access to static dependencies declared 
+				here in this file. Otherwise each of that module will have to mention explicit 
+				dependency on these modules so that they will be accessible to them -->
+			<!-- This is where "export" option comes in handly, we will export this 
+				static dependency so that all submodules dependent on this module will be 
+				able to access them and hernce will not required to declare these static 
+				dependencies explicitly in there own deployment descriptors -->
+
+			<!-- here in this case of quartz static dependency, this dependency is 
+				reqquired by submodule TestJpaWeb, and hence we have delcared this dependency 
+				here. And also point we should note is, this below line if without export 
+				option will only add dependency on quartz and hence TEstEjbWeb will not able 
+				access this and hence container will throw exception while class loading 
+				at the deployment time, since it can not find module quartz which is accessed 
+				in TestEJbWeb. -->
+			<!-- and hence to remove that error we must export this org.quartz module 
+				here using export="true" so that submodule TestEjbWeb which is dependent 
+				on this module will able to access these modules. -->
+			<!-- hence we should always make sure that if u want there static dependencies 
+				delcared here to be accessible to sbmodules dependent on this module, u must 
+				export them -->
+			<!-- his is reason why, all static module dependencies declared in jboss-deployment-structure.xml 
+				of praxify project are exported, because all other submodules like XtrWS, 
+				XtrAPI, XtrMIMS, XtrCC etc. should able to access them -->
 			<module name="org.quartz" export="true" />
 		</dependencies>
 	</deployment>

@@ -161,6 +161,13 @@
 		<servlet-name>JEmployeeRestHandler</servlet-name>
 		<servlet-class>com.example.jpa.web.ingeritance.joined.JEmployeeRestHandler</servlet-class>
 	</servlet>
+	<servlet>
+		<description>
+		</description>
+		<display-name>CacheRestHandler</display-name>
+		<servlet-name>CacheRestHandler</servlet-name>
+		<servlet-class>com.example.jpa.web.cache.CacheRestHandler</servlet-class>
+	</servlet>
 
 	<servlet-mapping>
 		<servlet-name>UserRegistrationServlet</servlet-name>
@@ -237,6 +244,10 @@
 	<servlet-mapping>
 		<servlet-name>JEmployeeRestHandler</servlet-name>
 		<url-pattern>/JEmployeeRestHandler</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>CacheRestHandler</servlet-name>
+		<url-pattern>/CacheRestHandler</url-pattern>
 	</servlet-mapping>
 	
 	<context-param>

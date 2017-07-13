@@ -9,5 +9,8 @@ final public class StaticConstant {
 	public enum STEmployeeDiscriminatorValue {STContractEmployee, STFullTimeEmployee, STPartTimeEmployee}
 	public enum JEmployeeDiscriminatorValue {JContractEmployee, JFullTimeEmployee, JPartTimeEmployee}
 	public enum EmployeeDiscriminatorValue {ContractEmployee, FullTimeEmployee, PartTimeEmployee}
+	
+	
+	public enum Configuration{config1, config2, config3};
 }
 
